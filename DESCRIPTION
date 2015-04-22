@@ -3,6 +3,7 @@ Type: Package
 Title: Hoelpis library of amazing plots
 Version: 0.1
 Date: 2015-04-22
+Imports: ggplot2
 Author: Soraya Hoelper
 Maintainer: Jens Preuﬂner <jens.preussner@mpi-bn.mpg.de>
 Description: This package provides custom functions used to plot Proteomics data.
