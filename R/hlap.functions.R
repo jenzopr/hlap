@@ -1,7 +1,7 @@
 #
 # FUNCTIONS
 #
-Soraya.heatmap = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), use="everything", title="", theme=soraya.heatmap.theme) {
+Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), use="everything", title="", theme=soraya.heatmap.theme) {
   # Assert sample names. If no sample names given, take column names.
   if(is.null(sample.names)) {sample.names = colnames(data)}
   if(length(colnames(data))==length(sample.names)){colnames(data)=sample.names}
