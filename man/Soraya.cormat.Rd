@@ -57,7 +57,7 @@ Soraya Hoelper and Jens Preuﬂner.
 ##---- Load the data ----
 data(diamonds)
 d = dcast(diamonds, carat ~ color, value.var = "price", fun.aggregate = mean)
-Soraya.cormat(d[,2:8], color=brewer.pal(9,"Blues"), title="Diamonds price correlation")
+Soraya.cormat(d[,2:8], color=brewer.pal(9,"Blues"), title="Diamonds price correlation")}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }

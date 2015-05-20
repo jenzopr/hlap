@@ -68,6 +68,7 @@ Soraya Hoelper and Jens Preuﬂner.
 \examples{
 ##---- Load the data ----
 tbd
+}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ ~kwd1 }
