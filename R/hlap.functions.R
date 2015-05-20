@@ -45,6 +45,13 @@ Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorR
   # Assert numerical columns only. Future plans: Coerce to numeric
   if(!all(unlist(lapply(data,class))=="numeric")){stop("Encountered non-numeric columns in data.")}
   
+  # Assert that no rows have a variance of 0:
+  zero.indices = apply(data, 1, var) == 0
+  if(any(zero.indices)){
+    data = data[!zero.indices,]
+    warning("Some data rows have variance 0. Those rows were discarded from clustering.")
+  }
+  
   # Calculate dendrograms and order rows/columns
   dd.col = as.dendrogram(hclust(method=agglomeration.method,dist(data,method=distance.method)))
   dd.row = as.dendrogram(hclust(method=agglomeration.method,dist(t(data),method=distance.method)))
