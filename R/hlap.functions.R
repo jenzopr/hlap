@@ -46,10 +46,10 @@ Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorR
   if(!all(unlist(lapply(data,class))=="numeric")){stop("Encountered non-numeric columns in data.")}
   
   # Assert that no rows have a variance of 0:
-  zero.indices = apply(data, 1, var) == 0
+  zero.indices = apply(data, 1, function(x){ifelse(var(x,na.rm = T)==0 | any(is.na(x) | any(is.nan(x))),TRUE,FALSE)})
   if(any(zero.indices)){
     data = data[!zero.indices,]
-    warning("Some data rows have variance 0. Those rows were discarded from clustering.")
+    warning("Some data rows have zero variance or contain NA. Those rows were discarded from clustering.")
   }
   
   # Calculate dendrograms and order rows/columns
