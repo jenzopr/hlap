@@ -1,13 +1,13 @@
-\name{soraya.heatmap.theme}
-\alias{soraya.heatmap.theme}
+\name{soraya.cormat.theme}
+\alias{soraya.cormat.theme}
 \docType{data}
 \title{
-Sorayas heatmap theme.
+Sorayas correlation heatmaps theme.
 }
 \description{
-A ggplot2 theme for heatmaps.
+A ggplot2 theme for correlation heatmaps.
 }
-\usage{data("soraya.heatmap.theme")}
+\usage{data("soraya.cormat.theme")}
 \format{
   The format is:
 List of 40
@@ -220,7 +220,7 @@ List of 40
 %%  ~~ possibly secondary sources and usages ~~
 }
 \examples{
-data(soraya.heatmap.theme)
-Soraya.heatmap(data,theme=soraya.heatmap.theme)
+data(soraya.cormat.theme)
+Soraya.cormat(data,theme=soraya.cormat.theme)
 }
 \keyword{datasets}

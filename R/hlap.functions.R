@@ -1,11 +1,11 @@
 #
 # FUNCTIONS
 #
-Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), use="everything", title="", theme=soraya.heatmap.theme) {
+Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), use="everything", title="", theme=soraya.cormat.theme) {
   # Assert sample names. If no sample names given, take column names.
   if(is.null(sample.names)) {sample.names = colnames(data)}
   if(length(colnames(data))==length(sample.names)){colnames(data)=sample.names}
-  else{stop(paste("Could not assign",length(sample.names),"sample.names to",length(colnames(data)),"data columns, lengths differ."))}
+  else{stop(paste("Could not assign",length(sample.names),"sample.names to",length(colnames(data)),"data columns, because their lengths differ."))}
   
   # Assert numerical columns only. Future plans: Coerce to numeric
   if(!all(unlist(lapply(data,class))=="numeric")){stop("Encountered non-numeric columns in data.")}
@@ -28,5 +28,73 @@ Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), us
   g=g+coord_fixed()
   g=g+ggtitle(title)
   g=g+theme
+  return(g)
+}
+
+Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorRampPalette(c("red", "yellow", "green"))(n = 299), agglomeration.method="ward.D2", distance.method="euclidean", dendro.upper.size=4, dendro.right.size=4, htheme=soraya.heatmap.theme, dtheme=soraya.dendro.theme) {
+  # Assert sample names. If no sample names given, take column names.
+  if(is.null(sample.names)) {sample.names = colnames(data)}
+  if(length(colnames(data))==length(sample.names)){colnames(data)=sample.names}
+  else{stop(paste("Could not assign",length(sample.names),"sample.names to",length(colnames(data)),"data columns, because their lengths differ."))}
+  
+  # Assert gene names. If no gene names given, take row names.
+  if(is.null(gene.names)) {gene.names = rownames(data)}
+  if(length(rownames(data))==length(gene.names)){rownames(data)=gene.names}
+  else{stop(paste("Could not assign",length(gene.names),"gene.names to",length(rownames(data)),"data rows, because their lengths differ."))}
+  
+  # Assert numerical columns only. Future plans: Coerce to numeric
+  if(!all(unlist(lapply(data,class))=="numeric")){stop("Encountered non-numeric columns in data.")}
+  
+  # Calculate dendrograms and order rows/columns
+  dd.col = as.dendrogram(hclust(method=agglomeration.method,dist(data,method=distance.method)))
+  dd.row = as.dendrogram(hclust(method=agglomeration.method,dist(t(data),method=distance.method)))
+  data = data[order.dendrogram(dd.col), order.dendrogram(dd.row)]
+  
+  # Use ggdendro to extract dendrogram data
+  ddata_x = dendro_data(dd.row)
+  ddata_y = dendro_data(dd.col)
+  
+  # Coerce to data.frame and add proper row names
+  df = as.data.frame(data)
+  df$measurement = row.names(df)
+  df$measurement = with(df, factor(measurement, levels=measurement, ordered=TRUE))
+  
+  # Melt into long format
+  m=melt(df,id.vars="measurement")
+  
+  # Create heatmap component
+  h = ggplot(m,aes(x=variable,y=measurement))
+  h = h + geom_tile(aes(fill=value))
+  h = h + scale_fill_gradientn(colours=color,name="value")
+  h = h + scale_x_discrete(expand = c(0,0)) 
+  h = h + scale_y_discrete(expand = c(0,0)) 
+  h = h + htheme
+  h = h + theme(plot.margin=unit(c(0,0,1,1), "cm"))
+  
+  # Create upper dendrogram component
+  u = ggplot(segment(ddata_x))
+  u = u + geom_segment(aes(x=x,y=y,xend=xend,yend=yend))
+  u = u + scale_x_continuous(expand = c(0,0))
+  u = u + scale_y_continuous(expand = c(0,0))
+  u = u + dtheme
+  u = u + theme(plot.margin=unit(c(1,1,0,1), "cm"))
+  
+  # Create right dendrogram component
+  r = ggplot(segment(ddata_y)) 
+  r = r + geom_segment(aes(x=x,y=y,xend=xend,yend=yend))
+  r = r + coord_flip()
+  r = r + scale_x_continuous(expand = c(0,0))
+  r = r + scale_y_continuous(expand = c(0,0))
+  r = r + dtheme
+  r = r + theme(plot.margin=unit(c(1,1,0,0), "cm"))
+  
+  # Put plot together and return
+  g = ggplotGrob(h)
+  g = gtable_add_cols(g, unit(dendro.right.size,"cm"))
+  g = gtable_add_grob(g, ggplotGrob(r), t=2, l=ncol(g), b=3, r=ncol(g))
+  g = gtable_add_rows(g, unit(dendro.upper.size,"cm"),0)
+  g = gtable_add_grob(g, ggplotGrob(u), t=1, l=4, b=1, r=4)
+  #grid.newpage()
+  #return(grid.draw(g))
   return(g)
 }
