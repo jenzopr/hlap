@@ -31,7 +31,7 @@ Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), us
   return(g)
 }
 
-Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorRampPalette(c("red", "yellow", "green"))(n = 299), agglomeration.method="ward.D2", distance.method="euclidean", dendro.upper.size=4, dendro.right.size=4, htheme=soraya.heatmap.theme, dtheme=soraya.dendro.theme) {
+Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorRampPalette(c("red", "yellow", "green"))(n = 299), agglomeration.method="ward.D2", distance.method="euclidean", dendro.upper.size=4, dendro.right.size=4, htheme=soraya.heatmap.theme, dtheme=theme_dendro()) {
   # Assert sample names. If no sample names given, take column names.
   if(is.null(sample.names)) {sample.names = colnames(data)}
   if(length(colnames(data))==length(sample.names)){colnames(data)=sample.names}
@@ -76,7 +76,7 @@ Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorR
   h = h + scale_x_discrete(expand = c(0,0)) 
   h = h + scale_y_discrete(expand = c(0,0)) 
   h = h + htheme
-  h = h + theme(plot.margin=unit(c(0,0,1,1), "cm"))
+  h = h + theme(plot.margin=unit(c(0.25,0.25,1,0), "cm"))
   
   # Create upper dendrogram component
   u = ggplot(segment(ddata_x))
@@ -84,7 +84,6 @@ Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorR
   u = u + scale_x_continuous(expand = c(0,0))
   u = u + scale_y_continuous(expand = c(0,0))
   u = u + dtheme
-  u = u + theme(plot.margin=unit(c(1,1,0,1), "cm"))
   
   # Create right dendrogram component
   r = ggplot(segment(ddata_y)) 
@@ -93,14 +92,13 @@ Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorR
   r = r + scale_x_continuous(expand = c(0,0))
   r = r + scale_y_continuous(expand = c(0,0))
   r = r + dtheme
-  r = r + theme(plot.margin=unit(c(1,1,0,0), "cm"))
   
   # Put plot together and return
   g = ggplotGrob(h)
   g = gtable_add_cols(g, unit(dendro.right.size,"cm"))
-  g = gtable_add_grob(g, ggplotGrob(r), t=2, l=ncol(g), b=3, r=ncol(g))
+  g = gtable_add_grob(g, gtable_filter(ggplotGrob(r), "panel"), t=2, l=ncol(g), b=3, r=ncol(g))
   g = gtable_add_rows(g, unit(dendro.upper.size,"cm"),0)
-  g = gtable_add_grob(g, ggplotGrob(u), t=1, l=4, b=1, r=4)
+  g = gtable_add_grob(g, gtable_filter(ggplotGrob(u), "panel"), t=1, l=4, b=1, r=4)
   #grid.newpage()
   #return(grid.draw(g))
   return(g)
