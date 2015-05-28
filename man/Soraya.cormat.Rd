@@ -20,6 +20,9 @@ A character vector containing color codes, as returned from brewer.pal().
   \item{use}{
 The use variable from the cor() function.
 }
+  \item{limits}{
+A numeric vector of length two describing the scale limits. Defaults to the minimum and maximum of observed correlation values.
+}
   \item{title}{
 The plots title.
 }

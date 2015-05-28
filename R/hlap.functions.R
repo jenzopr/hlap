@@ -1,7 +1,7 @@
 #
 # FUNCTIONS
 #
-Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), use="everything", title="", theme=soraya.cormat.theme, limits=NULL) {
+Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), use="everything", limits=NULL, title="", theme=soraya.cormat.theme) {
   # Assert sample names. If no sample names given, take column names.
   if(is.null(sample.names)) {sample.names = colnames(data)}
   if(length(colnames(data))==length(sample.names)){colnames(data)=sample.names}
