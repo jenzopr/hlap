@@ -1,7 +1,7 @@
 #
 # FUNCTIONS
 #
-Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), use="everything", title="", theme=soraya.cormat.theme) {
+Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), use="everything", title="", theme=soraya.cormat.theme, limits=NULL) {
   # Assert sample names. If no sample names given, take column names.
   if(is.null(sample.names)) {sample.names = colnames(data)}
   if(length(colnames(data))==length(sample.names)){colnames(data)=sample.names}
@@ -21,10 +21,13 @@ Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), us
   # Melt matrix into long format
   m=melt(c)
   
+  # Calculate proper correlation limits in case no default is given
+  if(is.null(limits)) {limits = c(min(m$value),max(m$value))}
+  
   # Plot and return
   g=ggplot(m,aes(x=Var2,y=Var1,fill=value))
   g=g+geom_tile(color = "white")
-  g=g+scale_fill_gradientn(colours=color,name="Pearson\ncorrelation")
+  g=g+scale_fill_gradientn(colours=color,name="Pearson\ncorrelation",limits=limits)
   g=g+coord_fixed()
   g=g+ggtitle(title)
   g=g+theme
