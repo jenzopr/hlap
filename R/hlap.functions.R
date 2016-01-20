@@ -34,7 +34,7 @@ Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), us
   return(g)
 }
 
-Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorRampPalette(c("red", "yellow", "green"))(n = 299), title="", agglomeration.method="ward.D2", distance.method="euclidean", dendro.upper.size=4, dendro.right.size=4, htheme=soraya.heatmap.theme, dtheme=theme_dendro()) {
+Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorRampPalette(c("red", "yellow", "green"))(n = 299), name="value", title="", agglomeration.method="ward.D2", distance.method="euclidean", dendro.upper.size=4, dendro.right.size=4, htheme=soraya.heatmap.theme, dtheme=theme_dendro()) {
   # Assert sample names. If no sample names given, take column names.
   if(is.null(sample.names)) {sample.names = colnames(data)}
   if(length(colnames(data))==length(sample.names)){colnames(data)=sample.names}
@@ -76,10 +76,10 @@ Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorR
   # Create heatmap component
   h = ggplot(m,aes(x=variable,y=measurement))
   h = h + geom_tile(aes(fill=value))
-  h = h + scale_fill_gradientn(colours=color,name="value")
+  h = h + scale_fill_gradientn(colours=color,name=name)
   h = h + scale_x_discrete(expand = c(0,0)) 
   h = h + scale_y_discrete(expand = c(0,0)) 
-  h = h + ggtitle(title) +
+  h = h + ggtitle(title)
   h = h + htheme
   h = h + theme(plot.margin=unit(c(0.25,0.25,1,0), "cm"))
   
