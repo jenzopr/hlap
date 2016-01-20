@@ -34,7 +34,7 @@ Soraya.cormat = function(data, sample.names=NULL, color=brewer.pal(9,"RdBu"), us
   return(g)
 }
 
-Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorRampPalette(c("red", "yellow", "green"))(n = 299), agglomeration.method="ward.D2", distance.method="euclidean", dendro.upper.size=4, dendro.right.size=4, htheme=soraya.heatmap.theme, dtheme=theme_dendro()) {
+Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorRampPalette(c("red", "yellow", "green"))(n = 299), title="", agglomeration.method="ward.D2", distance.method="euclidean", dendro.upper.size=4, dendro.right.size=4, htheme=soraya.heatmap.theme, dtheme=theme_dendro()) {
   # Assert sample names. If no sample names given, take column names.
   if(is.null(sample.names)) {sample.names = colnames(data)}
   if(length(colnames(data))==length(sample.names)){colnames(data)=sample.names}
@@ -58,6 +58,7 @@ Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorR
   # Calculate dendrograms and order rows/columns
   dd.col = as.dendrogram(hclust(method=agglomeration.method,dist(data,method=distance.method)))
   dd.row = as.dendrogram(hclust(method=agglomeration.method,dist(t(data),method=distance.method)))
+  
   data = data[order.dendrogram(dd.col), order.dendrogram(dd.row)]
   
   # Use ggdendro to extract dendrogram data
@@ -78,6 +79,7 @@ Soraya.heatmap = function(data, sample.names=NULL, gene.names=NULL, color=colorR
   h = h + scale_fill_gradientn(colours=color,name="value")
   h = h + scale_x_discrete(expand = c(0,0)) 
   h = h + scale_y_discrete(expand = c(0,0)) 
+  h = h + ggtitle(title) +
   h = h + htheme
   h = h + theme(plot.margin=unit(c(0.25,0.25,1,0), "cm"))
   
